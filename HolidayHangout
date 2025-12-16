@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Holiday Hangout Trivia</title>
+  <style>
+  :root{
+    --bg1:#0b1b2b;     /* deep winter navy */
+    --bg2:#2b0b18;     /* deep cranberry */
+    --card:#ffffffee;  /* frosted glass */
+    --ink:#111;
+    --muted:#3c3c3c;
+    --line:#e7e7e7;
+    --accent:#b11226;  /* festive red */
+    --accent2:#0d7a5f; /* pine */
+    --gold:#c9a227;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+  display: flex;
+  justify-content: center;
+    padding: 28px;
+    color: var(--ink);
+    background:
+      radial-gradient(1200px 800px at 10% 10%, rgba(255,255,255,0.10), transparent 60%),
+      radial-gradient(900px 700px at 90% 20%, rgba(255,255,255,0.08), transparent 55%),
+      linear-gradient(135deg, var(--bg1), var(--bg2));
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* subtle snow overlay */
+  body::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,.35) 0 1px, transparent 2px),
+      radial-gradient(circle at 70% 40%, rgba(255,255,255,.25) 0 1px, transparent 2px),
+      radial-gradient(circle at 40% 80%, rgba(255,255,255,.20) 0 1px, transparent 2px);
+    background-size: 220px 220px, 260px 260px, 300px 300px;
+    opacity: .35;
+  }
+
+ .wrap {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 0 40px;
+}
+
+  .hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 18px 16px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.08);
+    border-radius: 18px;
+    box-shadow: 0 12px 28px rgba(0,0,0,.25);
+    backdrop-filter: blur(8px);
+    margin-bottom: 18px;
+}
+  
+
+  .hero h1 {
+    margin: 0;
+    font-size: 34px;
+    letter-spacing: 0.2px;
+    color: #fff;
+    text-shadow: 0 2px 12px rgba(0,0,0,.35);
+    }
+
+    .hero h1::after {
+  content: " ❄️";
+  opacity: .85;
+}
+
+  .hero .sub {
+    margin: 6px 0 0;
+    color: rgba(255,255,255,.82);
+    font-size: 14px;
+  }
+
+  .badgeRow { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+  .badge {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.10);
+    color: rgba(255,255,255,.9);
+    font-size: 12px;
+    box-shadow: 0 8px 18px rgba(0,0,0,.18);
+    backdrop-filter: blur(6px);
+  }
+
+  .setupBar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+  padding:10px 12px;
+  border-radius:14px;
+  background: rgba(0,0,0,.04);
+}
+
+  .grid {
+    display: grid;
+    align-items: start;
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: 18px;
+  }
+
+
+  .card {
+    border: 1px solid rgba(255,255,255,.20);
+    border-radius: 18px;
+    padding: 16px;
+    background: var(--card);
+    box-shadow: 0 16px 34px rgba(0,0,0,.22);
+    backdrop-filter: blur(8px);
+    background: rgba(255,255,255,0.88); /* was ~1.0 / solid */
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px);
+  }
+
+  .card.game {
+  background: rgba(255,255,255,0.84); }
+
+  .muted { color: rgba(255,255,255,.82); margin: 0; }
+  .small { font-size: 13px; color: #4a4a4a; }
+  .divider { height: 1px; background: rgba(0,0,0,.08); margin: 12px 0; }
+
+  button {
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,.12);
+    background: #fff;
+    cursor: pointer;
+    transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
+  }
+  button:hover { transform: translateY(-1px); box-shadow: 0 10px 16px rgba(0,0,0,.12); }
+  button:active { transform: translateY(0px); box-shadow: 0 6px 10px rgba(0,0,0,.10); }
+  button:disabled { opacity: .5; cursor: not-allowed; transform:none; box-shadow:none; }
+
+  button.primary {
+    border: 1px solid rgba(255,255,255,.22);
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), #7d0b1a);
+    box-shadow: 0 12px 22px rgba(177,18,38,.26);
+  }
+  button.primary:hover {
+    box-shadow: 0 16px 28px rgba(177,18,38,.32);
+  }
+
+  button.reveal {
+  border: 1px solid rgba(201,162,39,.35);
+  background: linear-gradient(135deg, #c9a227, #b48b1f);
+  color: #1b1405;
+  box-shadow: 0 12px 22px rgba(201,162,39,.35);
+}
+
+.startPrompt {
+  margin-top: 12px;
+  margin-bottom: 6px;
+}
+
+  input, select {
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,.14);
+    width: 100%;
+    background: #fff;
+  }
+
+  .question {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 14px 0 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(177,18,38,.08), rgba(13,122,95,.08));
+  border: 1px solid rgba(0,0,0,.06);
+}
+  .choices { margin: 10px 0 0; padding-left: 18px; }
+
+  .answerBox {
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(13,122,95,.18);
+    background: linear-gradient(135deg, rgba(13,122,95,.10), rgba(201,162,39,.08));
+    display: none;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 8px; border-bottom: 1px solid rgba(0,0,0,.06); }
+  th { color: #333; font-size: 13px; }
+
+  .pill {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(13,122,95,.10), rgba(177,18,38,.10));
+    border: 1px solid rgba(0,0,0,.08);
+    font-size: 12px;
+  }
+
+  @media (max-width: 920px){
+    body { padding: 16px; }
+    .grid { grid-template-columns: 1fr; }
+    .hero { align-items: flex-start; }
+    .badgeRow { justify-content: flex-start; }
+  }
+
+  .row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 10px; /* <- this adds breathing room above rows */
+}
+
+.section {
+  margin-top: 14px;
+}
+
+.startPrompt {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+
+#winnersArea {
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: linear-gradient(
+      135deg,
+      rgba(201,162,39,.12),
+      rgba(177,18,38,.10)
+    );
+    border: 1px solid rgba(0,0,0,.06);
+  }
+
+ #categorySelect {
+  width: auto;
+  min-width: 180px;
+  max-width: 260px;
+}
+
+#fullscreenBtn { opacity: .9; }
+#fullscreenBtn:hover { opacity: 1; }
+
+.snow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.8), transparent),
+    radial-gradient(1.5px 1.5px at 100px 150px, rgba(255,255,255,.6), transparent),
+    radial-gradient(2.5px 2.5px at 200px 80px, rgba(255,255,255,.7), transparent),
+    radial-gradient(1px 1px at 300px 200px, rgba(255,255,255,.5), transparent),
+    radial-gradient(2px 2px at 400px 120px, rgba(255,255,255,.6), transparent);
+  background-size: 500px 500px;
+  animation: snowFall 25s linear infinite;
+  z-index: 0;
+}
+
+@keyframes snowFall {
+  from { transform: translateY(-100px); }
+  to   { transform: translateY(500px); }
+}
+
+.playerList{
+  max-height: 360px;     /* tune this number */
+  overflow-y: auto;
+  padding-right: 6px;    /* keeps scrollbar from kissing content */
+}
+
+.scoreTableWrap {
+  max-height: 360px;       /* controls how tall the scoreboard can grow */
+  overflow-y: auto;
+  margin-top: 12px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.05);
+}
+
+/* keeps header visible while scrolling */
+.scoreTableWrap thead th {
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.95);
+  z-index: 1;
+}
+
+.winner-sparkle {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(2px);
+  z-index: 9999;
+}
+
+.sparkle-card {
+  padding: 2rem 3rem;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #facc15, #fde68a);
+  color: #3f2d00;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  box-shadow:
+    0 0 40px rgba(250,204,21,0.8),
+    0 0 80px rgba(250,204,21,0.4);
+  animation: popIn 0.5s ease, sparkleGlow 2s ease-in-out infinite;
+}
+
+.sparkle-card div {
+  margin-top: 0.75rem;
+  font-size: 1.4rem;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes sparkleGlow {
+  0%, 100% { box-shadow: 0 0 40px rgba(250,204,21,0.6); }
+  50% { box-shadow: 0 0 70px rgba(250,204,21,0.9); }
+}
+
+.hidden {
+  display: none;
+}
+
+
+
+</style>
+</head>
+  <body>
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <h1>Holiday Hangout Trivia 🎄</h1>
+        <p class="sub">Host-led scoring • Multiple rounds • Multiple winners • Amaze points-ready</p>
+      </div>
+      <div class="badgeRow">
+        <div class="badge">✨ Trivia vibes</div>
+        <div class="badge">🍹 Happy hour energy</div>
+        <div class="badge">🏆 Winners!</div>
+      </div>
+    </div>
+
+    <div class="snow"></div>
+
+  <div class="grid">
+    <!-- GAME PANEL -->
+    <div class="card">
+      <div class="row" style="justify-content: space-between;">
+       <div class="controlPanel">
+  <div class="setupBar">
+    <div class="pill" id="roundPill">Round 1</div>
+    <div class="pill" id="qPill">Question 1</div>
+    <div class="pill" id="catPill">Category: —</div>
+    <div class="pill" id="diffPill">Difficulty: —</div>
+
+    <select id="categorySelect">
+      <option value="ALL">All categories</option>
+    </select>
+  </div>
+
+  <div class="actionBar">
+    <div class="row">
+      <button id="startBtn" class="primary">Start Round</button>
+      <button id="nextBtn" class="primary" disabled>Next Question</button>
+      <button id="fullscreenBtn">⛶ Full Screen</button>
+    </div>
+    <div class="startPrompt" id="startPrompt">
+    
+    </div>
+  </div>
+</div>
+        
+      </div>
+
+      <div class="divider"></div>
+
+      <div id="questionArea">
+        <div class="question" id="questionText">Click <b>Start Round</b> to begin.</div>
+        <ul class="choices" id="choicesList"></ul>
+
+        <div class="row" style="margin-top: 12px;">
+          <button id="revealBtn" class="reveal" disabled>✨ Reveal Answer</button>
+          <button id="skipBtn" disabled>Skip</button>
+        </div>
+
+        <div class="answerBox" id="answerBox">
+          <b>Answer:</b> <span id="answerText"></span><br/>
+          <span class="small" id="funFact"></span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div>
+        <div class="row" style="justify-content: space-between;">
+          <b>Quick Add Points</b>
+          <span class="small">Use after someone answers correctly (or do lightning bonuses).</span>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+          <div style="flex: 1;">
+            <select id="playerSelect" style="padding:10px 12px; border-radius:10px; border:1px solid #ccc; width:100%;">
+              <option value="">Select player…</option>
+            </select>
+          </div>
+          <div style="width: 140px;">
+            <select id="pointsSelect" style="padding:10px 12px; border-radius:10px; border:1px solid #ccc; width:100%;">
+              <option value="1">+1</option>
+              <option value="2">+2</option>
+              <option value="3" selected>+3</option>
+            </select>
+            
+          </div>
+          <button id="addPointsBtn" class="primary">Award</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCOREBOARD PANEL -->
+    <div class="card">
+      <b>Players & Scoreboard</b>
+      <p class="small">Add players, then award points as answers come in.</p>
+
+      <div class="row">
+        <input id="playerName" placeholder="Add a player (e.g., Manda)"/>
+        <button id="addPlayerBtn" class="primary">Add</button>
+      </div>
+
+      <div class="scoreTableWrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th style="width:90px;">Score</th>
+        <th style="width:80px;">Adjust</th>
+      </tr>
+    </thead>
+    <tbody id="scoreBody"></tbody>
+  </table>
+</div>
+
+      <div class="divider"></div>
+
+      <div class="row" style="justify-content: space-between;">
+        <b>Winners</b>
+        <div class="row">
+          <label class="small">Show top</label>
+          <select id="topN" style="padding:8px 10px; border-radius:10px; border:1px solid #ccc;">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+          </select>
+          <button id="showWinnersBtn">Update</button>
+        </div>
+      </div>
+      <div id="winnersArea" class="small" style="margin-top: 8px;">—</div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <button id="resetRoundBtn">Reset Round</button>
+        <button id="resetAllBtn">Reset All</button>
+      </div>
+
+      <p class="small" style="margin-top: 10px;">
+        Tip: run 3–5 rounds of 6–8 questions each. Award Amaze points to the top 2 each round, plus a final champion.
+      </p>
+    </div>
+  </div>
+
+<script>
+  // --- CONFIG ---
+  const GAME_CONFIG = {
+    rounds: [
+      { name: "Holiday Classics", questionsPerRound: 7 },
+      { name: "Winter & Pop Culture", questionsPerRound: 7 },
+      { name: "Lightning Round", questionsPerRound: 8 },
+    ],
+    pointsDefault: 3,
+  };
+
+  // Question bank (mix of multiple-choice + short answer)
+  // You can edit/add freely.
+  const QUESTION_BANK = [
+  { cat: "Movies_01", diff: 1, q: "In Home Alone, where are the McCallisters going for Christmas?", choices: ["London", "Paris", "New York", "Rome"], a: "Paris", fact: "Kevin’s family flies to Paris while he’s left behind." },
+  { cat: "Movies_02", diff: 1, q: "What is the name of the snowman in Frozen?", choices: ["Sven", "Olaf", "Kristoff", "Marshmallow"], a: "Olaf", fact: "Olaf is the warm-hug-loving snowman." },
+  { cat: "TV_01", diff: 1, q: "Which animated character says: “Bah, humbug!” most famously in many adaptations?", choices: ["The Grinch", "Ebenezer Scrooge", "Rudolph", "Santa"], a: "Ebenezer Scrooge", fact: "Scrooge is from A Christmas Carol." },
+  { cat: "Traditions_01", diff: 1, q: "What plant are people traditionally supposed to kiss under?", choices: ["Holly", "Mistletoe", "Pine", "Poinsettia"], a: "Mistletoe", fact: "Mistletoe kissing is a classic holiday trope." },
+  { cat: "Music_01", diff: 1, q: "Finish the lyric: “You better watch out, you better not cry…”", choices: ["Santa Claus is coming to town", "Jingle Bells", "Silent Night", "Deck the Halls"], a: "Santa Claus is coming to town", fact: "That line is from 'Santa Claus Is Comin’ to Town'." },
+  { cat: "Music_02", diff: 3, q: "Mariah Carey’s 'All I Want for Christmas Is You' was originally released in what year?", choices: ["1991", "1994", "1998", "2002"], a: "1994", fact: "It’s been re-charting like a holiday boomerang for years." },
+  { cat: "Food_01", diff: 1, q: "What spice is traditionally used in eggnog?", choices: ["Cumin", "Nutmeg", "Paprika", "Coriander"], a: "Nutmeg", fact: "Nutmeg is the classic eggnog topper." },
+  { cat: "Winter_01", diff: 2, q: "What is the name of a snowstorm with strong winds that reduce visibility?", choices: ["Monsoon", "Blizzard", "Typhoon", "Dust devil"], a: "Blizzard", fact: "Blizzards are defined by wind + low visibility + snowfall." },
+  { cat: "Movies_03", diff: 1, q: "In Elf, what is Buddy’s favorite food group?", choices: ["Pancakes", "Candy", "Syrup", "Pizza"], a: "Candy", fact: "He says: 'Candy, candy canes, candy corns, and syrup!'" },
+  { cat: "Traditions_02", diff: 2, q: "How many reindeer are named in 'Rudolph the Red-Nosed Reindeer' (the song)?", choices: ["6", "8", "9", "10"], a: "8", fact: "The named ones are 8; Rudolph is added as the 9th in other references." },
+  { cat: "Pop Culture_01", diff: 1, q: "Which Hogwarts house colors are red and gold?", choices: ["Ravenclaw", "Slytherin", "Gryffindor", "Hufflepuff"], a: "Gryffindor", fact: "Festive *and* brave." },
+  { cat: "Fun Facts_01", diff: 2, q: "What is the most common color of Christmas lights historically used in early electric strands?", choices: ["Blue", "Red", "White", "Multicolor"], a: "Multicolor", fact: "Early strands popularized multi-colored bulbs." },
+
+  { cat: "Lightning_01", diff: 1, q: "Name the green holiday character who tries to steal Christmas.", a: "The Grinch", fact: "Short answer: accept close matches." },
+  { cat: "Lightning_02", diff: 1, q: "What do you hang on a fireplace for presents?", a: "Stockings", fact: "Also accept 'stocking'." },
+  { cat: "Lightning_03", diff: 1, q: "What holiday treat is a striped red-and-white hook-shaped candy?", a: "Candy cane", fact: "Also accept 'candycanes'." },
+
+  // ADD THESE 15 (to make 30 total)
+  { cat: "Movies_04", diff: 2, q: "In The Polar Express, what word is punched into the boy’s ticket?", choices: ["BELIEVE", "HOPE", "JOY", "WONDER"], a: "BELIEVE", fact: "The ticket is punched to spell 'BELIEVE'." },
+  { cat: "Movies_05", diff: 3, q: "Which holiday movie is set around a radio station and features a 'lonely hearts' vibe?", choices: ["Sleepless in Seattle", "While You Were Sleeping", "Love Actually", "Serendipity"], a: "Sleepless in Seattle", fact: "Not strictly a Christmas-only movie, but a winter classic." },
+
+  { cat: "TV_02", diff: 3, q: "In The Office (US), what is the name of Dwight’s Christmas alter ego?", choices: ["Santa Dwight", "Belsnickel", "Krampus", "Jack Frost"], a: "Belsnickel", fact: "Dwight arrives as Belsnickel to judge who is impish or admirable." },
+  { cat: "TV_03", diff: 2, q: "In Friends, what animal does Ross dress as for a holiday party?", choices: ["Holiday Armadillo", "Elf", "Reindeer", "Snowman"], a: "Holiday Armadillo", fact: "The Holiday Armadillo teaches about Hanukkah." },
+
+  { cat: "Traditions_03", diff: 1, q: "What do people traditionally place at the top of a Christmas tree?", choices: ["A bell", "A star or angel", "A bow", "A candle"], a: "A star or angel", fact: "Both are common—pick either if you want to allow both." },
+  { cat: "Traditions_04", diff: 2, q: "Which day is known as the day after Christmas in the UK and some Commonwealth countries?", choices: ["Boxing Day", "Saint Day", "Wreath Day", "Yule Day"], a: "Boxing Day", fact: "Boxing Day is December 26." },
+
+  { cat: "Music_03", diff: 3, q: "Which song includes the lyric: “Everyone dancing merrily in the new old-fashioned way”?", choices: ["Rockin’ Around the Christmas Tree", "Jingle Bell Rock", "White Christmas", "Winter Wonderland"], a: "Rockin’ Around the Christmas Tree", fact: "That lyric is from 'Rockin’ Around the Christmas Tree'." },
+  { cat: "Music_04", diff: 2, q: "What holiday song is traditionally associated with a 'partridge in a pear tree'?", choices: ["The Twelve Days of Christmas", "O Holy Night", "Carol of the Bells", "Joy to the World"], a: "The Twelve Days of Christmas", fact: "The partridge kicks off the whole escalating gift list." },
+
+  { cat: "Food_02", diff: 1, q: "What is the main flavor in a classic candy cane?", choices: ["Peppermint", "Cinnamon", "Spearmint", "Vanilla"], a: "Peppermint", fact: "Peppermint is the classic candy cane flavor." },
+  { cat: "Food_03", diff: 1, q: "Which cookie is often shaped like a little person and decorated with icing?", choices: ["Snickerdoodle", "Gingerbread", "Shortbread", "Macaron"], a: "Gingerbread", fact: "Gingerbread people are a holiday staple." },
+
+  { cat: "Winter_02", diff: 2, q: "What is the name for frozen rain that forms a glaze on surfaces?", choices: ["Hail", "Sleet", "Freezing rain", "Frost"], a: "Freezing rain", fact: "It creates that dangerous glassy ice layer." },
+  { cat: "Winter_03", diff: 1, q: "What do you call the layer of ice crystals that forms on surfaces overnight?", choices: ["Dew", "Frost", "Mist", "Fog"], a: "Frost", fact: "Frost forms when water vapor freezes on cold surfaces." },
+
+  { cat: "Pop Culture_02", diff: 3, q: "Which fictional winter holiday figure is known for visiting kids on December 6 in some European traditions?", choices: ["Krampus", "Saint Nicholas", "The Tooth Fairy", "The Sandman"], a: "Saint Nicholas", fact: "Saint Nicholas Day traditions vary by country." },
+
+  { cat: "Fun Facts_02", diff: 2, q: "Which U.S. state has a town named Santa Claus?", choices: ["Indiana", "Ohio", "Colorado", "Vermont"], a: "Indiana", fact: "Santa Claus, Indiana is real—and very on-brand." },
+
+  { cat: "Lightning_04", diff: 2, q: "Name one of Santa’s reindeer (any one).", a: "Dasher/Dancer/Prancer/Vixen/Comet/Cupid/Donner/Blitzen/Rudolph", fact: "Accept any correctly spelled (or close) reindeer name." },
+];
+
+  // --- STATE ---
+  let players = []; // {name, score}
+  let currentRoundIndex = 0;
+  let currentQuestionIndex = 0;
+  let roundQuestions = [];
+  let roundActive = false;
+    let usedQuestionIds = new Set();
+
+  // --- DOM ---
+  const roundPill = document.getElementById("roundPill");
+  const qPill = document.getElementById("qPill");
+  const categorySelect = document.getElementById("categorySelect");
+  const catPill = document.getElementById("catPill");
+  const questionText = document.getElementById("questionText");
+  const choicesList = document.getElementById("choicesList");
+  const answerBox = document.getElementById("answerBox");
+  const answerText = document.getElementById("answerText");
+  const diffPill = document.getElementById("diffPill");
+  const funFact = document.getElementById("funFact");
+
+  const startBtn = document.getElementById("startBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const revealBtn = document.getElementById("revealBtn");
+  const skipBtn = document.getElementById("skipBtn");
+
+  const playerName = document.getElementById("playerName");
+  const addPlayerBtn = document.getElementById("addPlayerBtn");
+  const scoreBody = document.getElementById("scoreBody");
+
+  const playerSelect = document.getElementById("playerSelect");
+  const pointsSelect = document.getElementById("pointsSelect");
+  const addPointsBtn = document.getElementById("addPointsBtn");
+
+  const topN = document.getElementById("topN");
+  const showWinnersBtn = document.getElementById("showWinnersBtn");
+  const winnersArea = document.getElementById("winnersArea");
+
+  const resetRoundBtn = document.getElementById("resetRoundBtn");
+  const resetAllBtn = document.getElementById("resetAllBtn");
+
+  // --- HELPERS ---
+  function currentRound() {
+    return GAME_CONFIG.rounds[currentRoundIndex] ?? GAME_CONFIG.rounds[GAME_CONFIG.rounds.length - 1];
+  }
+
+  function updatePills(qObj) {
+  // Round + question count
+  roundPill.textContent = `Round ${currentRoundIndex + 1}: ${currentRound().name}`;
+  qPill.textContent = `Question ${currentQuestionIndex + 1} / ${
+    roundQuestions.length || currentRound().questionsPerRound
+  }`;
+
+  // Category logic
+  if (qObj && qObj.cat) {
+    // During a question: show the actual question category
+    catPill.textContent = `Category: ${getCategory(qObj)}`;
+  } else {
+    // Before round start or between rounds: show selected category
+    const selected = categorySelect?.value || "ALL";
+    catPill.textContent =
+      selected === "ALL"
+        ? "Category: All Categories"
+        : `Category: ${selected}`;
+  }
+
+    // Difficulty pill
+  if (qObj) {
+    const d = difficultyValue(qObj);
+    diffPill.textContent = `Difficulty: ${difficultyLabel(d)} • ${d} pt${d === 1 ? "" : "s"}`;
+  } else {
+    diffPill.textContent = "Difficulty: —";
+  }
+
+}
+
+function uniqueCategories() {
+  const cats = new Set(
+    QUESTION_BANK.map(q => q.cat.split("_")[0])
+  );
+  return ["ALL", ...Array.from(cats).sort()];
+}
+
+
+function populateCategoryDropdown() {
+  const cats = uniqueCategories();
+  categorySelect.innerHTML = cats
+    .map(c => `<option value="${c}">${c === "ALL" ? "All categories" : c}</option>`)
+    .join("");
+}
+
+function getAvailableQuestions(category) {
+  return QUESTION_BANK.filter(q => {
+    const matchesCat = category === "ALL" || getCategory(q) === category;
+    const unused = !usedQuestionIds.has(getId(q));
+    return matchesCat && unused;
+  });
+}
+
+
+function getCategory(q) {
+  return q.cat.split("_")[0]; // "Movies_01" -> "Movies"
+}
+function getId(q) {
+  return q.cat; // treat "Movies_01" as unique ID
+}
+function difficultyValue(q) {
+  return q?.diff ?? 1;
+}
+
+function difficultyLabel(d) {
+  if (d === 1) return "Easy";
+  if (d === 2) return "Medium";
+  return "Hard";
+}
+
+  function renderQuestion(qObj) {
+    updatePills(qObj);
+    answerBox.style.display = "none";
+    answerText.textContent = "";
+    funFact.textContent = "";
+    pointsSelect.value = String(difficultyValue(qObj));
+
+
+    if (!qObj) {
+      questionText.innerHTML = `Round complete. Hit <b>Reset Round</b> or move to the next round.`;
+      choicesList.innerHTML = "";
+      revealBtn.disabled = true;
+      nextBtn.disabled = true;
+      skipBtn.disabled = true;
+      return;
+    }
+
+    questionText.textContent = qObj.q;
+    choicesList.innerHTML = "";
+
+    if (qObj.choices && qObj.choices.length) {
+      qObj.choices.forEach(c => {
+        const li = document.createElement("li");
+        li.textContent = c;
+        choicesList.appendChild(li);
+      });
+    } else {
+      const li = document.createElement("li");
+      li.innerHTML = "<i>Short answer (people answer in chat)</i>";
+      choicesList.appendChild(li);
+    }
+    revealBtn.disabled = false;
+    nextBtn.disabled = true;  // only after reveal
+    skipBtn.disabled = false;
+  }
+
+  function revealAnswer() {
+    const qObj = roundQuestions[currentQuestionIndex];
+    if (!qObj) return;
+    answerBox.style.display = "block";
+    answerText.textContent = qObj.a;
+    funFact.textContent = qObj.fact ? `Fun fact: ${qObj.fact}` : "";
+    nextBtn.disabled = false;
+    revealBtn.disabled = true;
+  }
+
+  function nextQuestion() {
+    currentQuestionIndex++;
+    const qObj = roundQuestions[currentQuestionIndex];
+    renderQuestion(qObj);
+  }
+
+  function startRound() {
+  const perRound = currentRound().questionsPerRound;
+  const chosen = categorySelect.value || "ALL";
+roundQuestions = pickQuestions({ category: chosen, count: perRound });
+ 
+
+  currentQuestionIndex = 0;
+  roundActive = true;
+  categorySelect.disabled = true;
+
+  renderQuestion(roundQuestions[currentQuestionIndex]);
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickQuestions({ category, count }) {
+  const pool = QUESTION_BANK.filter(q => {
+    const matchesCat = category === "ALL" || getCategory(q) === category;
+    const unused = !usedQuestionIds.has(getId(q));
+    return matchesCat && unused;
+  });
+
+  if (pool.length < count) {
+    // if you prefer: alert + return; instead of clearing
+    usedQuestionIds.clear();
+  }
+
+  const freshPool = QUESTION_BANK.filter(q => {
+    const matchesCat = category === "ALL" || getCategory(q) === category;
+    const unused = !usedQuestionIds.has(getId(q));
+    return matchesCat && unused;
+  });
+
+  const picked = shuffle(freshPool).slice(0, count);
+  picked.forEach(q => usedQuestionIds.add(getId(q)));
+  return picked;
+}
+
+  function resetRound(advanceRound = true) {
+    roundQuestions = [];
+    currentQuestionIndex = 0;
+    roundActive = false;
+
+    startBtn.disabled = false;
+    nextBtn.disabled = true;
+    revealBtn.disabled = true;
+    skipBtn.disabled = true;
+    answerBox.style.display = "none";
+    questionText.innerHTML = `Click <b>Start Round</b> to begin.`;
+    choicesList.innerHTML = "";
+    categorySelect.disabled = false;
+
+    if (advanceRound) {
+      currentRoundIndex = (currentRoundIndex + 1) % GAME_CONFIG.rounds.length;
+    }
+    updatePills(null);
+  
+  }
+
+  function addPlayer(name) {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    if (players.some(p => p.name.toLowerCase() === trimmed.toLowerCase())) return;
+
+    players.push({ name: trimmed, score: 0 });
+    players = players.sort((a,b) => a.name.localeCompare(b.name));
+    renderScoreboard();
+    playerName.value = "";
+  }
+
+  function renderScoreboard() {
+    // table
+    scoreBody.innerHTML = "";
+    const sorted = [...players].sort((a,b) => b.score - a.score || a.name.localeCompare(b.name));
+    sorted.forEach(p => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${p.name}</td>
+        <td><b>${p.score}</b></td>
+        <td>
+          <button data-act="minus" data-name="${p.name}">-</button>
+          <button data-act="plus" data-name="${p.name}">+</button>
+        </td>
+      `;
+      scoreBody.appendChild(tr);
+    });
+
+    // dropdown
+    playerSelect.innerHTML = `<option value="">Select player…</option>` +
+      players.map(p => `<option value="${p.name}">${p.name}</option>`).join("");
+
+    updateWinners(false);
+  }
+
+  function adjustScore(name, delta) {
+    const p = players.find(x => x.name === name);
+    if (!p) return;
+    p.score = Math.max(0, p.score + delta);
+    renderScoreboard();
+  }
+
+  function awardPoints() {
+    const name = playerSelect.value;
+    const pts = parseInt(pointsSelect.value, 10);
+    if (!name || Number.isNaN(pts)) return;
+    adjustScore(name, pts);
+  }
+
+  function showWinnerSparkle(names) {
+  const overlay = document.getElementById("winnerSparkle");
+  const nameEl = document.getElementById("winnerNames");
+
+  nameEl.textContent = names.join(" & ");
+  overlay.classList.remove("hidden");
+
+  setTimeout(() => {
+    overlay.classList.add("hidden");
+  }, 2500);
+}
+
+  function updateWinners(sparkle = false) {
+    if (!players.length) { winnersArea.textContent = "—"; return; }
+    const N = parseInt(topN.value, 10);
+    const sorted = [...players].sort((a,b) => b.score - a.score || a.name.localeCompare(b.name));
+    const top = sorted.slice(0, N);
+
+    // include ties at the cutoff
+    const cutoffScore = top[top.length - 1]?.score ?? 0;
+    const withTies = sorted.filter(p => p.score >= cutoffScore && p.score > 0);
+
+    if (!withTies.length) { winnersArea.textContent = "No points yet—everyone’s still perfect. 😄"; return; }
+
+    winnersArea.innerHTML =
+      `<b>Current leaders:</b> ` +
+      withTies.map((p, i) => `${i === 0 ? "🏆" : "✨"} ${p.name} (${p.score})`).join(" • ");
+
+        if (sparkle) {
+  showWinnerSparkle(withTies.map(p => p.name));
+}
+  }
+
+function resetAll() {
+    players = [];
+    currentRoundIndex = 0;
+    resetRound(false);
+    renderScoreboard();
+    usedQuestionIds.clear();
+
+  }
+
+  // --- EVENTS ---
+  startBtn.addEventListener("click", startRound);
+  revealBtn.addEventListener("click", revealAnswer);
+  nextBtn.addEventListener("click", nextQuestion);
+  skipBtn.addEventListener("click", () => nextQuestion());
+  const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+fullscreenBtn.addEventListener("click", () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+    fullscreenBtn.textContent = "⛶ Exit Full Screen";
+  } else {
+    document.exitFullscreen();
+    fullscreenBtn.textContent = "⛶ Full Screen";
+  }
+});
+
+  addPlayerBtn.addEventListener("click", () => addPlayer(playerName.value));
+  playerName.addEventListener("keydown", (e) => { if (e.key === "Enter") addPlayer(playerName.value); });
+
+  scoreBody.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    const name = btn.getAttribute("data-name");
+    const act = btn.getAttribute("data-act");
+    if (act === "plus") adjustScore(name, 1);
+    if (act === "minus") adjustScore(name, -1);
+  });
+
+  categorySelect.addEventListener("change", () => {
+  updatePills(null);
+});
+
+  addPointsBtn.addEventListener("click", awardPoints);
+  showWinnersBtn.addEventListener("click", () => updateWinners(true));
+
+
+  resetRoundBtn.addEventListener("click", () => resetRound(false));
+  resetAllBtn.addEventListener("click", resetAll);
+
+  // init
+  pointsSelect.value = String(GAME_CONFIG.pointsDefault);
+  updatePills(null);
+  renderScoreboard();
+  populateCategoryDropdown();
+</script>
+
+<div id="winnerSparkle" class="winner-sparkle hidden">
+  <div class="sparkle-card">
+    🎉 Round Winner! 🎉
+    <div id="winnerNames"></div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
