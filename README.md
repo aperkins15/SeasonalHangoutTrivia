@@ -44,4 +44,18 @@ Perfect for:
 
 No frameworks, no build tools, no backend.
 
-Runs entirely in the browse
+Runs entirely in the browser
+
+---
+
+## ▶️ Run Locally
+
+### Option 1: VS Code Live Server (recommended)
+- Open `index.html`
+- Right-click → **Open with Live Server**
+
+### Option 2: Python HTTP server
+```bash
+python3 -m http.server
+
+
