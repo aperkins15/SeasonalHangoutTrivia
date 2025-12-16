@@ -57,6 +57,8 @@ Runs entirely in the browser
 ### Option 2: Python HTTP server
 ```bash
 python3 -m http.server
+```
+
 ## 🤖 AI Collaboration
 
 Built with the help of AI (ChatGPT) as a development partner.  
