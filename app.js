@@ -31,6 +31,7 @@ const funFact = document.getElementById("funFact");
 
 const startBtn = document.getElementById("startBtn");
 const nextBtn = document.getElementById("nextBtn");
+const nextRoundBtn = document.getElementById("nextRoundBtn");
 const revealBtn = document.getElementById("revealBtn");
 const skipBtn = document.getElementById("skipBtn");
 
@@ -47,6 +48,7 @@ const showWinnersBtn = document.getElementById("showWinnersBtn");
 const winnersArea = document.getElementById("winnersArea");
 
 const resetRoundBtn = document.getElementById("resetRoundBtn");
+
 const resetAllBtn = document.getElementById("resetAllBtn");
 
 const getBank = () =>
@@ -235,8 +237,12 @@ function renderQuestion(qObj) {
     revealBtn.disabled = true;
     nextBtn.disabled = true;
     skipBtn.disabled = true;
+
+    if (nextRoundBtn) nextRoundBtn.disabled = false; // ✅ enable only when complete
     return;
   }
+
+  if (nextRoundBtn) nextRoundBtn.disabled = true; // ✅ keep disabled during play
 
   questionText.textContent = qObj.q;
   choicesList.innerHTML = "";
@@ -254,6 +260,9 @@ function renderQuestion(qObj) {
   }
   revealBtn.disabled = false;
   nextBtn.disabled = true; // only after reveal
+  if (!qObj) {
+    nextRoundBtn.disabled = false;
+  }
   skipBtn.disabled = false;
 }
 
@@ -280,7 +289,12 @@ function startRound() {
 
   currentQuestionIndex = 0;
   roundActive = true;
+  startBtn.disabled = true;
   categorySelect.disabled = true;
+  startBtn.disabled = true;
+  nextRoundBtn.disabled = true;
+
+  if (nextRoundBtn) nextRoundBtn.disabled = true;
 
   renderQuestion(roundQuestions[currentQuestionIndex]);
 }
@@ -332,10 +346,13 @@ function resetRound(advanceRound = true) {
   questionText.innerHTML = `Click <b>Start Round</b> to begin.`;
   choicesList.innerHTML = "";
   categorySelect.disabled = false;
-
+  nextRoundBtn.disabled = true;
   if (advanceRound) {
     currentRoundIndex = (currentRoundIndex + 1) % GAME_CONFIG.rounds.length;
   }
+
+  if (nextRoundBtn) nextRoundBtn.disabled = true;
+
   updatePills(null);
 }
 
@@ -449,6 +466,10 @@ revealBtn.addEventListener("click", revealAnswer);
 nextBtn.addEventListener("click", nextQuestion);
 skipBtn.addEventListener("click", () => nextQuestion());
 const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+if (nextRoundBtn) {
+  nextRoundBtn.addEventListener("click", () => resetRound(true));
+}
 
 if (seasonSelect) {
   seasonSelect.addEventListener("change", (e) => {

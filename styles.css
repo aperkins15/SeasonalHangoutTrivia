@@ -221,6 +221,8 @@ button:disabled {
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 button.primary {
