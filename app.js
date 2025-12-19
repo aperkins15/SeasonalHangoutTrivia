@@ -62,6 +62,10 @@ const SEASONS = {
     cssOverride: "themes/spring-stpaddy.css",
     questionsSrc: "questions/stpaddys.js",
   },
+  summer: {
+    cssOverride: "themes/summer.css",
+    questionsSrc: "questions/summer.js",
+  },
 };
 
 let activeSeason = "winter";
@@ -166,8 +170,20 @@ function populateCategoryDropdown() {
     .join("");
 }
 
+const CATEGORY_LABELS = {
+  Winter: "Seasonal",
+  BBQ: "BBQ & Cookouts",
+  BEACH: "Pool & Beach",
+  ROADTRIP: "Road Trips",
+  MOVIES: "Summer Movies",
+  MUSIC: "Summer Music",
+  SNACKS: "Summer Snacks",
+  GAMES: "Backyard Games",
+  NOSTALGIA: "Summer Nostalgia",
+};
+
 function displayCategoryName(cat) {
-  return cat === "Winter" ? "Seasonal" : cat;
+  return CATEGORY_LABELS[cat] || cat;
 }
 
 function uniqueCategories() {

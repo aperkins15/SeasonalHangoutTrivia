@@ -1,0 +1,77 @@
+/* themes/summer.css */
+
+:root{
+  --bg1:#1e90ff;   /* sky */
+  --bg2:#87ceeb;   /* light blue */
+  --accent:#ffb703; /* sun */
+  --accent2:#fb8500; /* warm orange */
+  --gold:#ffd166;  /* glow */
+}
+
+/* Swap the header vibe */
+.hero h1::after { content:" ☀️"; }
+
+/* Summer winner sparkle: warm + celebratory */
+.sparkle-card{
+  background: linear-gradient(
+    135deg,
+    rgba(255,183,3,.95),
+    rgba(255,209,102,.95)
+  );
+  color: #5a3b00;
+  box-shadow:
+    0 0 35px rgba(255,183,3,.55),
+    0 0 80px rgba(255,209,102,.35);
+  animation: popIn 0.5s ease, summerGlow 1.6s ease-in-out infinite;
+}
+
+.sparkle-title{
+  font-size: 1.9rem;
+  letter-spacing: .3px;
+}
+
+.sparkle-title::before { content:"🏖️ "; }
+.sparkle-title::after  { content:" 🍉"; }
+
+@keyframes summerGlow{
+  0%,100%{
+    filter: brightness(1) saturate(1);
+    transform: translateY(0) scale(1);
+  }
+  50%{
+    filter: brightness(1.1) saturate(1.2);
+    transform: translateY(-2px) scale(1.02);
+  }
+}
+
+/* ============================
+   Summer Float (replaces snow)
+   ============================ */
+
+/* Disable base snow */
+.snow::before,
+.snow::after {
+  display: none !important;
+}
+
+/* Gentle floating “bokeh” instead of flakes */
+.snow {
+  opacity: .9 !important;
+  filter: none !important;
+
+  background-image:
+    radial-gradient(6px 6px at 15% 25%, #ffd166 60%, transparent 61%),
+    radial-gradient(5px 5px at 35% 55%, #ffb703 60%, transparent 61%),
+    radial-gradient(4px 4px at 60% 30%, #ffffff 55%, transparent 56%),
+    radial-gradient(6px 6px at 80% 65%, #ffd166 60%, transparent 61%),
+    radial-gradient(5px 5px at 95% 40%, #ffb703 60%, transparent 61%);
+
+  background-size: 420px 420px;
+  animation: summerDrift 80s linear infinite !important;
+}
+
+@keyframes summerDrift {
+  0%   { transform: translateY(-10%) translateX(0%); }
+  50%  { transform: translateY(50%) translateX(5%); }
+  100% { transform: translateY(120%) translateX(-5%); }
+}
