@@ -1,0 +1,73 @@
+/* themes/spring-stpaddy.css
+   Spring / St. Patrick’s Day vibe layered on top of your existing styles.css
+*/
+
+/* Override your shared theme variables */
+:root {
+  --bg1: #06361f;     /* deep emerald */
+  --bg2: #1b6b3a;     /* bright shamrock */
+  --accent: #1f8a4c;  /* primary button/accents */
+  --accent2: #0b5d2f; /* secondary */
+  --gold: #d6b24a;    /* “gold coin” */
+}
+
+/* Keep your frosted-card look but slightly warmer */
+.hero {
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+/* Swap the ❄️ for 🍀 (your current snowflake lives here) */
+.hero h1::after {
+  content: " 🍀";
+  opacity: 0.9;
+}
+
+/* Make the “snow speckles” more springy (soft sparkle) */
+body::before {
+  opacity: 0.28;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(214, 178, 74, 0.22) 0 1px, transparent 2px),
+    radial-gradient(circle at 70% 40%, rgba(255, 255, 255, 0.16) 0 1px, transparent 2px),
+    radial-gradient(circle at 40% 80%, rgba(176, 255, 210, 0.16) 0 1px, transparent 2px);
+}
+
+/* Turn your falling snow into “shamrock confetti” dots (same animation, different color mix) */
+.snow {
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, rgba(176, 255, 210, 0.75), transparent),
+    radial-gradient(1.5px 1.5px at 100px 150px, rgba(255, 255, 255, 0.45), transparent),
+    radial-gradient(2.5px 2.5px at 200px 80px, rgba(214, 178, 74, 0.55), transparent),
+    radial-gradient(1px 1px at 300px 200px, rgba(176, 255, 210, 0.55), transparent),
+    radial-gradient(2px 2px at 400px 120px, rgba(255, 255, 255, 0.35), transparent);
+  animation-duration: 30s; /* a little more floaty */
+}
+
+/* Primary buttons go shamrock */
+button.primary {
+  background: linear-gradient(135deg, var(--accent), #0b5d2f);
+  box-shadow: 0 12px 22px rgba(31, 138, 76, 0.25);
+}
+
+/* Gold stays gold (nice for reveal / winners / sparkle card) */
+button.reveal {
+  border: 1px solid rgba(214, 178, 74, 0.45);
+  background: linear-gradient(135deg, #d6b24a, #b8922d);
+}
+
+/* Pills + Winners area get a green/gold blend */
+.pill {
+  background: linear-gradient(
+    135deg,
+    rgba(31, 138, 76, 0.16),
+    rgba(214, 178, 74, 0.12)
+  );
+}
+
+#winnersArea {
+  background: linear-gradient(
+    135deg,
+    rgba(214, 178, 74, 0.14),
+    rgba(31, 138, 76, 0.12)
+  );
+}
