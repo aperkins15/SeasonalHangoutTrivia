@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Holiday Hangout Trivia</title>
+     </head>
+     <script src="questions/winter.js"></script>
+<script src="app.js"></script>
+
+  <body>
+    <div class="wrap">
+      <div class="hero">
+        <div>
+          <h1>Holiday Hangout Trivia 🎄</h1>
+          <p class="sub">
+            Host-led scoring • Multiple rounds • Multiple winners • Amaze
+            points-ready
+          </p>
+        </div>
+        <div class="badgeRow">
+          <div class="badge">✨ Trivia vibes</div>
+          <div class="badge">🍹 Happy hour energy</div>
+          <div class="badge">🏆 Winners!</div>
+        </div>
+      </div>
+
+      <div class="snow"></div>
+
+      <div class="grid">
+        <!-- GAME PANEL -->
+        <div class="card">
+          <div class="row" style="justify-content: space-between">
+            <div class="controlPanel">
+              <div class="setupBar">
+                <div class="pill" id="roundPill">Round 1</div>
+                <div class="pill" id="qPill">Question 1</div>
+                <div class="pill" id="catPill">Category: —</div>
+                <div class="pill" id="diffPill">Difficulty: —</div>
+
+                <select id="categorySelect">
+                  <option value="ALL">All categories</option>
+                </select>
+              </div>
+
+              <div class="actionBar">
+                <div class="row">
+                  <button id="startBtn" class="primary">Start Round</button>
+                  <button id="nextBtn" class="primary" disabled>
+                    Next Question
+                  </button>
+                  <button id="fullscreenBtn">⛶ Full Screen</button>
+                </div>
+                <div class="startPrompt" id="startPrompt"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div id="questionArea">
+            <div class="question" id="questionText">
+              Click <b>Start Round</b> to begin.
+            </div>
+            <ul class="choices" id="choicesList"></ul>
+
+            <div class="row" style="margin-top: 12px">
+              <button id="revealBtn" class="reveal" disabled>
+                ✨ Reveal Answer
+              </button>
+              <button id="skipBtn" disabled>Skip</button>
+            </div>
+
+            <div class="answerBox" id="answerBox">
+              <b>Answer:</b> <span id="answerText"></span><br />
+              <span class="small" id="funFact"></span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div>
+            <div class="row" style="justify-content: space-between">
+              <b>Quick Add Points</b>
+              <span class="small"
+                >Use after someone answers correctly (or do lightning
+                bonuses).</span
+              >
+            </div>
+            <div class="row" style="margin-top: 10px">
+              <div style="flex: 1">
+                <select
+                  id="playerSelect"
+                  style="
+                    padding: 10px 12px;
+                    border-radius: 10px;
+                    border: 1px solid #ccc;
+                    width: 100%;
+                  "
+                >
+                  <option value="">Select player…</option>
+                </select>
+              </div>
+              <div style="width: 140px">
+                <select
+                  id="pointsSelect"
+                  style="
+                    padding: 10px 12px;
+                    border-radius: 10px;
+                    border: 1px solid #ccc;
+                    width: 100%;
+                  "
+                >
+                  <option value="1">+1</option>
+                  <option value="2">+2</option>
+                  <option value="3" selected>+3</option>
+                </select>
+              </div>
+              <button id="addPointsBtn" class="primary">Award</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCOREBOARD PANEL -->
+        <div class="card">
+          <b>Players & Scoreboard</b>
+          <p class="small">
+            Add players, then award points as answers come in.
+          </p>
+
+          <div class="row">
+            <input id="playerName" placeholder="Add a player (e.g., Manda)" />
+            <button id="addPlayerBtn" class="primary">Add</button>
+          </div>
+
+          <div class="scoreTableWrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th style="width: 90px">Score</th>
+                  <th style="width: 80px">Adjust</th>
+                </tr>
+              </thead>
+              <tbody id="scoreBody"></tbody>
+            </table>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row" style="justify-content: space-between">
+            <b>Winners</b>
+            <div class="row">
+              <label class="small">Show top</label>
+              <select
+                id="topN"
+                style="
+                  padding: 8px 10px;
+                  border-radius: 10px;
+                  border: 1px solid #ccc;
+                "
+              >
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+              </select>
+              <button id="showWinnersBtn">Update</button>
+            </div>
+          </div>
+          <div id="winnersArea" class="small" style="margin-top: 8px">—</div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <button id="resetRoundBtn">Reset Round</button>
+            <button id="resetAllBtn">Reset All</button>
+          </div>
+
+          <p class="small" style="margin-top: 10px">
+            Tip: run 3–5 rounds of 6–8 questions each. Award Amaze points to the
+            top 2 each round, plus a final champion.
+          </p>
+        </div>
+      </div>
+
+      
+
+      <div id="winnerSparkle" class="winner-sparkle hidden">
+        <div class="sparkle-card">
+          🎉 Round Winner! 🎉
+          <div id="winnerNames"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
