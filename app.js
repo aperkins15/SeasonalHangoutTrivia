@@ -98,15 +98,13 @@
 
         function populateCategoryDropdown() {
           const cats = uniqueCategories();
-          categorySelect.innerHTML = cats
-            .map(
-              (c) =>
-                `<option value="${c}">${
-                  c === "ALL" ? "All categories" : c
-                }</option>`
-            )
-            .join("");
-        }
+          categorySelect.innerHTML = cats.map(
+                (c) =>
+                      `<option value="${c}">${
+                        c === "ALL" ? "All categories" : c === "Winter" ? "Seasonal" : c
+                      }</option>`
+  );
+}
 
         function getAvailableQuestions(category) {
           return QUESTION_BANK.filter((q) => {
