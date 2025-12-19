@@ -156,21 +156,14 @@ function populateCategoryDropdown() {
     .join("");
 }
 
+function displayCategoryName(cat) {
+  return cat === "Winter" ? "Seasonal" : cat;
+}
+
 function uniqueCategories() {
   const bank = Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
   const cats = new Set(bank.map(getCategory).filter(Boolean));
   return ["ALL", ...Array.from(cats).sort()];
-}
-
-
-function populateCategoryDropdown() {
-  const cats = uniqueCategories();
-  categorySelect.innerHTML = cats.map(
-    (c) =>
-      `<option value="${c}">${
-        c === "ALL" ? "All categories" : c === "Winter" ? "Seasonal" : c
-      }</option>`
-  );
 }
 
 function getAvailableQuestions(category) {
@@ -430,7 +423,6 @@ if (seasonSelect) {
     setSeason(e.target.value);
   });
 }
-
 
 fullscreenBtn.addEventListener("click", () => {
   if (!document.fullscreenElement) {
