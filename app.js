@@ -49,18 +49,22 @@ const winnersArea = document.getElementById("winnersArea");
 const resetRoundBtn = document.getElementById("resetRoundBtn");
 const resetAllBtn = document.getElementById("resetAllBtn");
 
+const getBank = () =>
+  Array.isArray(window.QUESTION_BANK) ? window.QUESTION_BANK : [];
+
+
 // --- SEASONS (winter is base; others may add an override CSS) ---
 const SEASONS = {
   winter: {
-    // winter is ALWAYS ON via themes/winter.css in index.html
-    cssOverride: "", // no override
-    questionsSrc: "winter.js",
+    cssOverride: "", // winter base theme already loaded
+    questionsSrc: "questions/winter.js",
   },
   "spring-stpaddy": {
     cssOverride: "themes/spring-stpaddy.css",
-    questionsSrc: "stpaddys.js",
+    questionsSrc: "questions/stpaddys.js",
   },
 };
+
 
 let activeSeason = "winter";
 
@@ -93,16 +97,19 @@ function setSeason(seasonKey) {
     }
 
     usedQuestionIds.clear();
-    resetAll();
     populateCategoryDropdown();
     updatePills(null);
     renderScoreboard();
     questionText.innerHTML = `Click <b>Start Round</b> to begin.`;
   };
 
-  s.onerror = () => {
-    console.error(`Failed to load questions for season: ${activeSeason}`);
-  };
+ s.onerror = () => {
+  const src = SEASONS[activeSeason].questionsSrc;
+  console.error(`Failed to load questions for season: ${activeSeason}`, src);
+  questionText.textContent = `Couldn't load ${src}. Check file path.`;
+};
+
+
 
   document.head.appendChild(s);
 }
@@ -167,19 +174,26 @@ function uniqueCategories() {
 }
 
 function getAvailableQuestions(category) {
-  return QUESTION_BANK.filter((q) => {
+  const bank = getBank();
+  return bank.filter((q) => {
     const matchesCat = category === "ALL" || getCategory(q) === category;
     const unused = !usedQuestionIds.has(getId(q));
     return matchesCat && unused;
   });
 }
 
+
 function getCategory(q) {
-  return q.cat.split("_")[0]; // "Movies_01" -> "Movies"
+  const raw = q?.cat ?? q?.category ?? ""; // supports either key
+  if (!raw) return "";
+  return String(raw).split("_")[0]; // "Movies_01" -> "Movies"
 }
+
 function getId(q) {
-  return q.cat; // treat "Movies_01" as unique ID
+  const raw = q?.cat ?? q?.id ?? q?.key ?? ""; // fallback options
+  return raw ? String(raw) : "";
 }
+
 function difficultyValue(q) {
   return q?.diff ?? 1;
 }
@@ -263,18 +277,18 @@ function shuffle(arr) {
 }
 
 function pickQuestions({ category, count }) {
-  // Prefer selected category
-  const preferred = QUESTION_BANK.filter((q) => {
+  const bank = getBank();
+
+  const preferred = bank.filter((q) => {
     const matches = category === "ALL" || getCategory(q) === category;
     return matches && !usedQuestionIds.has(getId(q));
   });
 
   const picked = shuffle(preferred).slice(0, count);
 
-  // Top off from anywhere if needed
   if (picked.length < count) {
     const need = count - picked.length;
-    const fallback = QUESTION_BANK.filter(
+    const fallback = bank.filter(
       (q) =>
         !usedQuestionIds.has(getId(q)) &&
         !picked.some((p) => getId(p) === getId(q))
@@ -286,6 +300,7 @@ function pickQuestions({ category, count }) {
   picked.forEach((q) => usedQuestionIds.add(getId(q)));
   return picked;
 }
+
 
 function resetRound(advanceRound = true) {
   roundQuestions = [];
@@ -468,4 +483,11 @@ window.initGame = function initGame() {
 
   // Set default points selector
   pointsSelect.value = String(GAME_CONFIG.pointsDefault);
+
+  // boot (safe even with defer)
+ 
 };
+
+window.initGame?.();
+
+
