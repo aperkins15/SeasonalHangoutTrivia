@@ -1,6 +1,6 @@
 # Seasonal Hangout Trivia 🎉
 
-A festive, host-led trivia web app built for remote holiday hangouts.  
+A festive, host-led trivia web app built for remote hangouts and casual group play.  
 Designed to be run live by a host who controls pacing, scoring, and vibes.
 
 Built as a lightweight, single-page app with no frameworks and no backend.
@@ -10,80 +10,93 @@ Built as a lightweight, single-page app with no frameworks and no backend.
 ## ✨ Features
 
 - Multiple rounds with randomized questions (no duplicates per game)
-- Category selection or “All categories”
+- Category selection or **All Categories**
 - Difficulty tagging (Easy / Medium / Hard → 1 / 2 / 3 points)
 - Live scoreboard with manual score adjustment
 - Scrollable player list for larger groups
 - Round winners display with a celebratory sparkle moment
 - Festive UI with subtle seasonal theming
+- **In-app Season picker** (questions + visuals swap dynamically)
 
 ---
 
 ## 🌦 Seasonal Design
 
-This project is designed to be reused quarterly.
+This project is designed to be reused year-round.
 
-- Questions are stored in seasonal files (e.g. `questions/winter.js`)
-- Visual theming is handled via seasonal CSS files (e.g. `themes/winter.css`)
-- Switching seasons requires changing only a couple of includes in `index.html`
+- Questions are stored in seasonal files  
+  (e.g. `questions/winter.js`, `questions/stpaddys.js`, `questions/summer.js`)
+- Visual theming is handled via optional seasonal CSS overrides  
+  (e.g. `themes/winter.css`, `themes/spring-stpaddy.css`, `themes/summer.css`)
+- The active season is selected **from the UI**, and the app dynamically loads:
+  - the appropriate question bank
+  - an optional seasonal theme layer
 
-This allows the same core app to be reused for Winter, Spring, Summer, and Fall events without modifying game logic.
+This allows the same core game logic to be reused for **Winter, Spring, Summer, and future seasons** without modifying the app’s core code.
 
 ---
 
 ## 🧠 How It’s Used
 
-This app is meant to be **host-driven**, not automated trivia.
+This app is intentionally **host-driven**, not automated trivia.
 
 The host:
+
 - Adds player names
 - Reads questions aloud
 - Awards points based on correctness and difficulty
+- Controls question pacing
 - Advances rounds and announces winners
 
 Perfect for:
+
 - Remote holiday hangouts
 - Team socials
-- Low-pressure trivia nights
+- Casual, low-pressure trivia nights
 
 ---
 
 ## 🛠 Tech Stack
 
-- **HTML**
-- **CSS**
-- **Vanilla JavaScript**
+- HTML
+- CSS
+- Vanilla JavaScript
 
-No frameworks, no build tools, no backend.
+No frameworks.  
+No build tools.  
+No backend.
 
-Runs entirely in the browser with no backend or build step.
+Runs entirely in the browser.
 
 ---
 
 ## ▶️ Run Locally
-Runs entirely in the browser and can be opened directly via `file://` (no server required).
 
-### Option 1: VS Code Live Server (optional)
+The app runs entirely client-side.
+
+For best results (especially with dynamic season loading), use a simple local server:
+
+**Option 1: VS Code Live Server**
 - Open `index.html`
 - Right-click → **Open with Live Server**
 
-### Option 2: Python HTTP server
+**Option 2: Python HTTP server**
 ```bash
 python3 -m http.server
 ```
----
-## 🔮 Future Ideas
+
+## Future Ideas
 
 - Expanded seasonal question packs
 - Additional seasonal visual themes
-- Optional season selector in the UI
+- Optional auto-season mode based on date
+- Host keyboard shortcuts
 - Exportable scores for repeat events
 
 ---
 
-## 🤖 AI Collaboration
+## AI Collaboration
 
-Built with the help of AI (ChatGPT) as a development partner.  
+Built with the help of AI (ChatGPT) as a development partner.
+
 Concept, structure, UX decisions, and final code were directed, edited, and owned by me.
-
-
